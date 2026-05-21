@@ -1,0 +1,61 @@
+### GET announcements without query params
+GET http://localhost:3000/announcements
+
+### GET announcements with search
+GET http://localhost:3000/announcements?search=ноутбук
+
+### GET announcements with sort and page
+GET http://localhost:3000/announcements?sort=oldest&page=2
+
+### GET announcement by id (existing)
+GET http://localhost:3000/announcements/1
+
+### GET announcement by id (non-existing)
+GET http://localhost:3000/announcements/9999
+
+### Create announcement with valid data
+POST http://localhost:3000/announcements
+Content-Type: application/json
+
+{
+  "title": "Продам ноутбук ASUS",
+  "description": "Відмінний стан, 16GB RAM, SSD 512GB",
+  "price": 18000,
+  "category": "sale",
+  "contactInfo": "0991234567"
+}
+
+### Create announcement with invalid data
+POST http://localhost:3000/announcements
+Content-Type: application/json
+
+{
+  "title": "Ноут",
+  "description": "Коротко",
+  "price": -100,
+  "category": "unknown",
+  "contactInfo": "123"
+}
+
+### Patch announcement with partial data
+PATCH http://localhost:3000/announcements/1
+Content-Type: application/json
+
+{
+  "price": 17000,
+  "contactInfo": "0997654321"
+}
+
+### Patch announcement with non-existing id
+PATCH http://localhost:3000/announcements/9999
+Content-Type: application/json
+
+{
+  "price": 20000
+}
+
+### Delete announcement by id
+DELETE http://localhost:3000/announcements/1
+
+### Delete announcement with non-existing id
+DELETE http://localhost:3000/announcements/9999
