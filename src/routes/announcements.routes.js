@@ -4,6 +4,7 @@ import { getAnnouncementById } from '../controllers/announcements/getAnnouncemen
 import { createAnnouncement } from '../controllers/announcements/createAnnouncement.js';
 import { updateAnnouncement } from '../controllers/announcements/updateAnnouncement.js';
 import { deleteAnnouncement } from '../controllers/announcements/deleteAnnouncement.js';
+import { authenticate } from '../middleware/auth.middleware.js';
 import {
   getAnnouncementsValidator,
   getByIdValidator,
@@ -97,7 +98,7 @@ router.get('/:id', getByIdValidator, getAnnouncementById);
  *       '400':
  *         description: Validation failed
  */
-router.post('/', createAnnouncementValidator, createAnnouncement);
+router.post('/', authenticate, createAnnouncementValidator, createAnnouncement);
 
 /**
  * @openapi
@@ -141,7 +142,12 @@ router.post('/', createAnnouncementValidator, createAnnouncement);
  *       '404':
  *         description: Announcement not found
  */
-router.patch('/:id', updateAnnouncementValidator, updateAnnouncement);
+router.patch(
+  '/:id',
+  authenticate,
+  updateAnnouncementValidator,
+  updateAnnouncement,
+);
 
 /**
  * @openapi
@@ -160,6 +166,11 @@ router.patch('/:id', updateAnnouncementValidator, updateAnnouncement);
  *       '404':
  *         description: Announcement not found
  */
-router.delete('/:id', deleteAnnouncementValidator, deleteAnnouncement);
+router.delete(
+  '/:id',
+  authenticate,
+  deleteAnnouncementValidator,
+  deleteAnnouncement,
+);
 
 export default router;

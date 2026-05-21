@@ -59,3 +59,76 @@ DELETE http://localhost:3000/announcements/1
 
 ### Delete announcement with non-existing id
 DELETE http://localhost:3000/announcements/9999
+
+### Register a new user
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{
+  "username": "ivan_petrenko",
+  "password": "strongpassword",
+  "name": "Іван"
+}
+
+### Login user
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "username": "ivan_petrenko",
+  "password": "strongpassword"
+}
+
+### Refresh tokens from cookie or body
+POST http://localhost:3000/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
+### Get current profile
+GET http://localhost:3000/auth/me
+Authorization: Bearer {{accessToken}}
+
+### Logout current user
+POST http://localhost:3000/auth/logout
+Authorization: Bearer {{accessToken}}
+
+### Create announcement with auth
+POST http://localhost:3000/announcements
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "title": "Продам ноутбук ASUS",
+  "description": "Відмінний стан, 16GB RAM, SSD 512GB",
+  "price": 18000,
+  "category": "sale",
+  "contactInfo": "0991234567"
+}
+
+### Create announcement without auth
+POST http://localhost:3000/announcements
+Content-Type: application/json
+
+{
+  "title": "Продам ноутбук ASUS",
+  "description": "Відмінний стан, 16GB RAM, SSD 512GB",
+  "price": 18000,
+  "category": "sale",
+  "contactInfo": "0991234567"
+}
+
+### Update someone else's announcement
+PATCH http://localhost:3000/announcements/1
+Authorization: Bearer {{otherAccessToken}}
+Content-Type: application/json
+
+{
+  "price": 17000
+}
+
+### Delete someone else's announcement
+DELETE http://localhost:3000/announcements/1
+Authorization: Bearer {{otherAccessToken}}
