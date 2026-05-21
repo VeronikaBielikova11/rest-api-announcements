@@ -5,6 +5,7 @@ import { createAnnouncement } from '../controllers/announcements/createAnnouncem
 import { updateAnnouncement } from '../controllers/announcements/updateAnnouncement.js';
 import { deleteAnnouncement } from '../controllers/announcements/deleteAnnouncement.js';
 import { authenticate } from '../middleware/auth.middleware.js';
+import { upload } from '../middleware/upload.middleware.js';
 import {
   getAnnouncementsValidator,
   getByIdValidator,
@@ -71,7 +72,7 @@ router.get('/:id', getByIdValidator, getAnnouncementById);
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             required: [title, description, price, category, contactInfo]
@@ -92,13 +93,22 @@ router.get('/:id', getByIdValidator, getAnnouncementById);
  *               contactInfo:
  *                 type: string
  *                 minLength: 5
+ *               image:
+ *                 type: string
+ *                 format: binary
  *     responses:
  *       '201':
  *         description: Created announcement
  *       '400':
  *         description: Validation failed
  */
-router.post('/', authenticate, createAnnouncementValidator, createAnnouncement);
+router.post(
+  '/',
+  authenticate,
+  upload.single('image'),
+  createAnnouncementValidator,
+  createAnnouncement,
+);
 
 /**
  * @openapi
@@ -114,7 +124,7 @@ router.post('/', authenticate, createAnnouncementValidator, createAnnouncement);
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
@@ -134,6 +144,9 @@ router.post('/', authenticate, createAnnouncementValidator, createAnnouncement);
  *               contactInfo:
  *                 type: string
  *                 minLength: 5
+ *               image:
+ *                 type: string
+ *                 format: binary
  *     responses:
  *       '200':
  *         description: Updated announcement
@@ -145,6 +158,7 @@ router.post('/', authenticate, createAnnouncementValidator, createAnnouncement);
 router.patch(
   '/:id',
   authenticate,
+  upload.single('image'),
   updateAnnouncementValidator,
   updateAnnouncement,
 );

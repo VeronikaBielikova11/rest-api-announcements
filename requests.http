@@ -15,6 +15,7 @@ GET http://localhost:3000/announcements/9999
 
 ### Create announcement with valid data
 POST http://localhost:3000/announcements
+Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
@@ -27,6 +28,7 @@ Content-Type: application/json
 
 ### Create announcement with invalid data
 POST http://localhost:3000/announcements
+Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
@@ -37,8 +39,9 @@ Content-Type: application/json
   "contactInfo": "123"
 }
 
-### Patch announcement with partial data
+### PATCH announcement with partial data
 PATCH http://localhost:3000/announcements/1
+Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
@@ -46,19 +49,121 @@ Content-Type: application/json
   "contactInfo": "0997654321"
 }
 
-### Patch announcement with non-existing id
+### PATCH announcement with non-existing id
 PATCH http://localhost:3000/announcements/9999
+Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
   "price": 20000
 }
 
-### Delete announcement by id
+### DELETE announcement by id
 DELETE http://localhost:3000/announcements/1
+Authorization: Bearer {{accessToken}}
 
-### Delete announcement with non-existing id
+### DELETE announcement with non-existing id
 DELETE http://localhost:3000/announcements/9999
+Authorization: Bearer {{accessToken}}
+
+### Auth rate limit test #1
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "username": "wronguser",
+  "password": "wrongpass"
+}
+
+### Auth rate limit test #2
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "username": "wronguser",
+  "password": "wrongpass"
+}
+
+### Auth rate limit test #3
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "username": "wronguser",
+  "password": "wrongpass"
+}
+
+### Auth rate limit test #4
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "username": "wronguser",
+  "password": "wrongpass"
+}
+
+### Auth rate limit test #5
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "username": "wronguser",
+  "password": "wrongpass"
+}
+
+### Auth rate limit test #6
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "username": "wronguser",
+  "password": "wrongpass"
+}
+
+### Auth rate limit test #7
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "username": "wronguser",
+  "password": "wrongpass"
+}
+
+### Auth rate limit test #8
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "username": "wronguser",
+  "password": "wrongpass"
+}
+
+### Auth rate limit test #9
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "username": "wronguser",
+  "password": "wrongpass"
+}
+
+### Auth rate limit test #10
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "username": "wronguser",
+  "password": "wrongpass"
+}
+
+### Auth rate limit test #11
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "username": "wronguser",
+  "password": "wrongpass"
+}
 
 ### Register a new user
 POST http://localhost:3000/auth/register
@@ -98,15 +203,61 @@ Authorization: Bearer {{accessToken}}
 ### Create announcement with auth
 POST http://localhost:3000/announcements
 Authorization: Bearer {{accessToken}}
-Content-Type: application/json
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
-{
-  "title": "Продам ноутбук ASUS",
-  "description": "Відмінний стан, 16GB RAM, SSD 512GB",
-  "price": 18000,
-  "category": "sale",
-  "contactInfo": "0991234567"
-}
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="title"
+
+Продам ноутбук ASUS
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="description"
+
+Відмінний стан, 16GB RAM, SSD 512GB
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="price"
+
+18000
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="category"
+
+sale
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="contactInfo"
+
+0991234567
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### Create announcement with photo
+POST http://localhost:3000/announcements
+Authorization: Bearer {{accessToken}}
+Content-Type: multipart/form-data
+
+--boundary
+Content-Disposition: form-data; name="title"
+
+Продам велосипед
+--boundary
+Content-Disposition: form-data; name="description"
+
+Trek у відмінному стані
+--boundary
+Content-Disposition: form-data; name="price"
+
+8500
+--boundary
+Content-Disposition: form-data; name="category"
+
+sale
+--boundary
+Content-Disposition: form-data; name="contactInfo"
+
+veloman@gmail.com
+--boundary
+Content-Disposition: form-data; name="image"; filename="bike.jpg"
+Content-Type: image/jpeg
+
+< ./path/to/bike.jpg
+--boundary--
 
 ### Create announcement without auth
 POST http://localhost:3000/announcements

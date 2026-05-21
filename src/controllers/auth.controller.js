@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import createHttpError from 'http-errors';
 import prisma from '../../prisma/client.js';
+import logger from '../logger.js';
 
 const createAccessToken = (user) => {
   return jwt.sign(
@@ -55,6 +56,8 @@ export const register = async (req, res) => {
     },
   });
 
+  logger.info({ userId: user.id, username: user.username }, 'User registered');
+
   res.cookie('refreshToken', refreshToken, {
     httpOnly: true,
     maxAge: 7 * 24 * 60 * 60 * 1000,
@@ -97,6 +100,8 @@ export const login = async (req, res) => {
       userId: user.id,
     },
   });
+
+  logger.info({ userId: user.id, username: user.username }, 'User logged in');
 
   res.cookie('refreshToken', refreshToken, {
     httpOnly: true,

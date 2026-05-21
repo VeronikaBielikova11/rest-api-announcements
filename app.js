@@ -2,9 +2,14 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
+import cors from 'cors';
+import helmet from 'helmet';
+import pinoHttp from 'pino-http';
 import { errors as celebrateErrors } from 'celebrate';
 import announcementsRouter from './src/routes/announcements.routes.js';
 import authRouter from './src/routes/auth.routes.js';
+import { authRateLimiter } from './src/middleware/rateLimiter.middleware.js';
+import logger from './src/logger.js';
 import 'dotenv/config';
 
 const app = express();
@@ -38,11 +43,28 @@ const swaggerOptions = {
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(',').map((origin) => origin.trim())
+  : [];
+
+app.use(helmet());
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error('Origin not allowed by CORS'));
+    },
+    optionsSuccessStatus: 200,
+  }),
+);
+app.use(pinoHttp({ logger }));
 app.use(express.json());
 app.use(cookieParser());
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-app.use('/auth', authRouter);
+app.use('/auth', authRateLimiter, authRouter);
 app.use('/announcements', announcementsRouter);
 app.use(celebrateErrors());
 
@@ -81,6 +103,10 @@ app.use((err, req, res, next) => {
 
   if (err.code === 'P2003') {
     return res.status(400).json({ error: 'Foreign key constraint failed' });
+  }
+
+  if (err.message === 'Origin not allowed by CORS') {
+    return res.status(403).json({ error: err.message });
   }
 
   if (err.status || err.statusCode) {
